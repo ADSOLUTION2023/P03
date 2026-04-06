@@ -26,6 +26,7 @@ import in.co.rays.project_3.util.ServletUtility;
 
 @WebServlet(urlPatterns = { "/LoginCtl" })
 public class LoginCtl extends BaseCtl {
+	
 	private static final long serialVersionUID = 1L;
 	public static final String OP_REGISTER = "Register";
 	public static final String OP_SIGN_IN = "SignIn";

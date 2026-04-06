@@ -29,8 +29,7 @@ public class JDBCDataSource {
     public static JDBCDataSource getInstance() {
         if (datasource == null) {
 
-            ResourceBundle rb = ResourceBundle
-                    .getBundle("in.co.rays.project_3.bundle.system");
+            ResourceBundle rb = ResourceBundle.getBundle("in.co.rays.project_3.bundle.system");
 
             datasource = new JDBCDataSource();
             datasource.cpds = new ComboPooledDataSource();

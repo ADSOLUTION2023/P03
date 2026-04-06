@@ -26,7 +26,7 @@ public final class ModelFactory {
 	public MarksheetModelInt getMarksheetModel() {
 		MarksheetModelInt marksheetModel = (MarksheetModelInt) modelCache.get("marksheetModel");
 		if (marksheetModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				marksheetModel = new MarksheetModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -40,7 +40,7 @@ public final class ModelFactory {
 	public CollegeModelInt getCollegeModel() {
 		CollegeModelInt collegeModel = (CollegeModelInt) modelCache.get("collegeModel");
 		if (collegeModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				collegeModel = new CollegeModelHibImp();
 
 			}
@@ -55,7 +55,7 @@ public final class ModelFactory {
 	public RoleModelInt getRoleModel() {
 		RoleModelInt roleModel = (RoleModelInt) modelCache.get("roleModel");
 		if (roleModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				roleModel = new RoleModelHibImp();
 
 			}
@@ -71,7 +71,7 @@ public final class ModelFactory {
 
 		UserModelInt userModel = (UserModelInt) modelCache.get("userModel");
 		if (userModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				userModel = new UserModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -86,7 +86,7 @@ public final class ModelFactory {
 	public StudentModelInt getStudentModel() {
 		StudentModelInt studentModel = (StudentModelInt) modelCache.get("studentModel");
 		if (studentModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				studentModel = new StudentModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -101,7 +101,7 @@ public final class ModelFactory {
 	public CourseModelInt getCourseModel() {
 		CourseModelInt courseModel = (CourseModelInt) modelCache.get("courseModel");
 		if (courseModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				courseModel = new CourseModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -118,7 +118,7 @@ public final class ModelFactory {
 		TimetableModelInt timetableModel = (TimetableModelInt) modelCache.get("timetableModel");
 
 		if (timetableModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				timetableModel = new TimetableModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -133,7 +133,7 @@ public final class ModelFactory {
 	public SubjectModelInt getSubjectModel() {
 		SubjectModelInt subjectModel = (SubjectModelInt) modelCache.get("subjectModel");
 		if (subjectModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				subjectModel = new SubjectModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
@@ -148,7 +148,7 @@ public final class ModelFactory {
 	public FacultyModelInt getFacultyModel() {
 		FacultyModelInt facultyModel = (FacultyModelInt) modelCache.get("facultyModel");
 		if (facultyModel == null) {
-			if ("Hibernate".equals(DATABASE)) {
+			if ("hiber".equals(DATABASE)) {
 				facultyModel = new FacultyModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
