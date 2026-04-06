@@ -28,7 +28,15 @@
 
 <style type="text/css">
 .aj {
-	background-image: linear-gradient(to bottom right,#f5f5dc, #d4af37);
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    background-size: 200% 200%;
+    animation: navGradient 6s ease infinite;
+}
+
+@keyframes navGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 </style>
 </head>

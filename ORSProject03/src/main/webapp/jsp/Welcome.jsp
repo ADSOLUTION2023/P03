@@ -9,15 +9,18 @@
 <style>
 .p4 {
 	background-image:
-		url('<%=ORSView.APP_CONTEXT%>/img/avengers.jpg');
+		url('<%=ORSView.APP_CONTEXT%>/img/general bckgrnd.jpg');
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
 
-.cl {
-	font-family: Lucida Calligraphy;
-	font-family: Monotype Corsiva;
-	font-family: Footlight MT Light;
+.cl {body { font-family:'Poppins', sans-serif;
+	
+}
+
+h1, h2 {
+	font-family: 'Raleway', sans-serif;
+}
 }
 </style>
 
@@ -28,8 +31,8 @@
 	</div>
 	<div class="text-cs1">
 		<center>
-			<h1 style=:"margin-top:20%;; color: white">
-				<b class="cl">Welcome to online result system</b>
+			<h1 style="""margin-top:20%;; color:white">
+				<b class="cl">Welcome to Online Result System</b>
 			</h1>
 		</center>
 	</div>
