@@ -56,38 +56,7 @@
 
 
 		<!-- usecase -->
-		<mapping
-			resource="in/co/rays/project_3/hbm/WatchlistDTO.hbm.xml" />
-		<mapping
-		    resource="in/co/rays/project_3/hbm/EventDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/PaymentDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/LocationDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/ProfileDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/InquiryDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/TaskDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/MaintenanceDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/ClientDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/ShiftDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/EnrollmentDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/EventRegistrationDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/SupportTicketDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/EmiDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/ParkingDTO.hbm.xml" />
-		<mapping
-			resource="in/co/rays/project_3/hbm/AssetDTO.hbm.xml" />
+		
 			
 
 	</session-factory>

@@ -85,10 +85,7 @@ public interface ORSView {
 	
 	
 	// USERCASE
-	public String WATCHLIST_CTL = APP_CONTEXT + "/ctl/WatchlistCtl";
-	public String WATCHLIST_LIST_CTL = APP_CONTEXT + "/ctl/WatchlistListCtl";
-	public String WATCHLIST_VIEW = PAGE_FOLDER + "/WatchlistView.jsp";
-	public String WATCHLIST_LIST_VIEW = PAGE_FOLDER + "/WatchlistListView.jsp";
+	
 	
 	public String EVENT_CTL = APP_CONTEXT + "/ctl/EventCtl";
 	public String EVENT_LIST_CTL = APP_CONTEXT + "/ctl/EventListCtl";
