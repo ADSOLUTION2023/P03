@@ -10,8 +10,9 @@ public interface EventModelInt {
 	public long add(EventDTO dto)throws ApplicationException,DuplicateRecordException;
 	public void delete(EventDTO dto)throws ApplicationException;
 	public void update(EventDTO dto)throws ApplicationException,DuplicateRecordException;
-	public EventDTO findByPK(long pk)throws ApplicationException;
-	public EventDTO findByLogin(String login)throws ApplicationException;
+	public EventDTO findByPk(long pk)throws ApplicationException;
+	public EventDTO findByEvent(String eventName)throws ApplicationException;
+	public EventDTO findByParticipent(String participentName)throws ApplicationException;
 	public List list()throws ApplicationException;
 	public List list(int pageNo,int pageSize)throws ApplicationException;
 	public List search(EventDTO dto,int pageNo,int pageSize)throws ApplicationException;

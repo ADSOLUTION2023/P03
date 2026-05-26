@@ -1,11 +1,13 @@
 package in.co.rays.project_3.model;
 
 import java.sql.Connection;
+
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-
+import java.sql.Date;
 import in.co.rays.project_3.dto.EventDTO;
 import in.co.rays.project_3.dto.UserDTO;
 import in.co.rays.project_3.exception.ApplicationException;
@@ -41,16 +43,13 @@ public class EventModelJDBC implements EventModelInt {
 		Connection con = null;
 		long pk = 0;
 		EventDTO existDto = null;
-		existDto = findByEventName(dto.getEventName());
-		EventDTO existDto1 = findByParticipant(dto.getParticipantName());
+		existDto = findByEvent(dto.getEventName());
+		EventDTO existDto1 = findByParticipent(dto.getParticipantName());
 		if (existDto != null && existDto1 != null) {
 			throw new DuplicateRecordException("Participant already Registered for the event");
 		}
 		try {
-			con = JDBCDataS
-					
-					
-					\\\\\\\\\\\\\\\\\\\\\\\\\\\
+			con = JDBCDataSource.getConnection();
 			con.setAutoCommit(false);
 			pk = nextPK();
 			PreparedStatement ps = con.prepareStatement("insert into ST_EVENT values(?,?,?,?,?)");
@@ -90,8 +89,8 @@ public class EventModelJDBC implements EventModelInt {
 		Connection con = null;
 		long pk = 0;
 		EventDTO existDto = null;
-		existDto = findByEventName(dto.getEventName());
-		EventDTO existDto1 = findByParticipant(dto.getParticipantName());
+		existDto = findByEvent(dto.getEventName());
+		EventDTO existDto1 = findByParticipent(dto.getParticipantName());
 		if (existDto != null && existDto1 != null) {
 			throw new DuplicateRecordException("Participant already Registered for the event");
 		}
@@ -99,8 +98,8 @@ public class EventModelJDBC implements EventModelInt {
 			con = JDBCDataSource.getConnection();
 			con.setAutoCommit(false);
 			pk = nextPK();
-			PreparedStatement ps = con
-					.prepareStatement("update ST_EVENT set PARTICIPANT_NAME=?,EVENT_NAME=?,EMAIL=?,REGISTRATION_DATE=?,CREATED_BY=?,MODIFIED_BY=?,CREATED_DATETIME=?,MODIFIED_DATETIME=? WHERE ID=?");
+			PreparedStatement ps = con.prepareStatement(
+					"update ST_EVENT set PARTICIPANT_NAME=?,EVENT_NAME=?,EMAIL=?,REGISTRATION_DATE=?,CREATED_BY=?,MODIFIED_BY=?,CREATED_DATETIME=?,MODIFIED_DATETIME=? WHERE ID=?");
 			ps.setString(2, dto.getParticipantName());
 			ps.setString(3, dto.getEventName());
 			ps.setString(4, dto.getEmail());
@@ -137,7 +136,7 @@ public class EventModelJDBC implements EventModelInt {
 		try {
 			con = JDBCDataSource.getConnection();
 			con.setAutoCommit(false);
-			PreparedStatement ps = con.prepareStatement("delete from ST_EVENTe id=?");
+			PreparedStatement ps = con.prepareStatement("delete from ST_EVENT where id=?");
 			ps.setLong(1, dto.getId());
 			ps.executeUpdate();
 			con.commit();
@@ -149,55 +148,258 @@ public class EventModelJDBC implements EventModelInt {
 			} catch (Exception ex) {
 				throw new ApplicationException("Exception : Delete rollback exception " + ex.getMessage());
 			}
-			throw new ApplicationException("Exception : Exception in delete User");
+			throw new ApplicationException("Exception : Exception in delete Event");
 		} finally {
 			JDBCDataSource.closeConnection(con);
 		}
 
 	}
-,@Override
-	public EventDTO findByPK(long pk) throws ApplicationException {
-		Connection con = null;
-		PreparedStatement ps = null;
-		UserDTO dto = null;
-		try {
-			con = JDBCDataSource.getConnection();
-			ps = con.prepareStatement("select * from ST_USER where id=?");
-			ps.setLong(1, pk);
-			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
-				dto = new EventDTO
-		return null;
-	}
-
-	@Override
-	public EventDTO findByLogin(String login) throws ApplicationException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public List list() throws ApplicationException {
-		// TODO Auto-generated method stub
-		return null;
+		return list(0, 0);
 	}
 
 	@Override
 	public List list(int pageNo, int pageSize) throws ApplicationException {
-		// TODO Auto-generated method stub
-		return null;
+		Connection con = null;
+		PreparedStatement ps = null;
+		ArrayList array = null;
+		EventDTO dto = null;
+		StringBuffer sql = new StringBuffer("select * from ST_EVENT where 1=1");
+		if (pageSize > 0) {
+			pageNo = (pageNo - 1) * pageSize;
+			sql.append("limit" + pageNo + "," + pageSize);
+		}
+		try {
+			con = JDBCDataSource.getConnection();
+			ps = con.prepareStatement(sql.toString());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				dto = new EventDTO();
+				dto.setId(rs.getLong(1));
+				dto.setParticipantName(rs.getString(2));
+				dto.setEventName(rs.getString(3));
+				dto.setEmail(rs.getString(4));
+				dto.setRegistrationDate(rs.getDate(5));
+				dto.setCreatedBy(rs.getString(15));
+				dto.setModifiedBy(rs.getString(16));
+				dto.setCreatedDatetime(rs.getTimestamp(17));
+				dto.setModifiedDatetime(rs.getTimestamp(18));
+				array.add(dto);
+			}
+			rs.close();
+		} catch (Exception e) {
+			throw new ApplicationException("Exception : Exception in getting list of Events");
+		} finally {
+			JDBCDataSource.closeConnection(con);
+			return array;
+		}
 	}
 
 	@Override
 	public List search(EventDTO dto, int pageNo, int pageSize) throws ApplicationException {
-		// TODO Auto-generated method stub
-		return null;
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ArrayList list = null;
+
+		StringBuffer sql = new StringBuffer("SELECT * FROM EVENT WHERE 1=1");
+
+		if (dto != null) {
+
+			if (dto.getId() > 0) {
+				sql.append(" AND ID = " + dto.getId());
+			}
+
+			if (dto.getParticipantName() != null && dto.getParticipantName().length() > 0) {
+
+				sql.append(" AND PARTICIPANT_NAME like '" + dto.getParticipantName() + "%'");
+			}
+
+			if (dto.getEventName() != null && dto.getEventName().length() > 0) {
+
+				sql.append(" AND EVENT_NAME like '" + dto.getEventName() + "%'");
+			}
+
+			if (dto.getEmail() != null && dto.getEmail().length() > 0) {
+
+				sql.append(" AND EMAIL like '" + dto.getEmail() + "%'");
+			}
+
+			if (dto.getRegistrationDate() != null) {
+
+				sql.append(" AND REGISTRATION_DATE = '" + new java.sql.Date(dto.getRegistrationDate().getTime()) + "'");
+			}
+		}
+
+		// Pagination
+		if (pageSize > 0) {
+
+			pageNo = (pageNo - 1) * pageSize;
+
+			sql.append(" LIMIT " + pageNo + "," + pageSize);
+		}
+
+		list = new ArrayList();
+
+		try {
+
+			con = JDBCDataSource.getConnection();
+
+			ps = con.prepareStatement(sql.toString());
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				dto = new EventDTO();
+
+				dto.setId(rs.getLong("ID"));
+				dto.setParticipantName(rs.getString("PARTICIPANT_NAME"));
+				dto.setEventName(rs.getString("EVENT_NAME"));
+				dto.setEmail(rs.getString("EMAIL"));
+				dto.setRegistrationDate(rs.getDate("REGISTRATION_DATE"));
+
+				list.add(dto);
+			}
+
+			rs.close();
+
+		} catch (Exception e) {
+
+			throw new ApplicationException("Exception in Event Search");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(con);
+		}
+
+		return list;
 	}
 
 	@Override
 	public List search(EventDTO dto) throws ApplicationException {
-		// TODO Auto-generated method stub
-		return null;
+		return search(dto, 0, 0);
 	}
 
+	@Override
+	public EventDTO findByPk(long pk) throws ApplicationException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		EventDTO dto = null;
+		try {
+			con = JDBCDataSource.getConnection();
+			ps = con.prepareStatement("select * from ST_EVENT where id=?");
+			ps.setLong(1, pk);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				dto = new EventDTO();
+				dto.setId(rs.getLong(1));
+				dto.setParticipantName(rs.getString(2));
+				dto.setEventName(rs.getString(3));
+				dto.setEmail(rs.getString(4));
+				dto.setRegistrationDate(rs.getDate(5));
+			}
+			rs.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ApplicationException("Exception : Exception in getting Event by pk");
+		} finally {
+			JDBCDataSource.closeConnection(con);
+		}
+		return dto;
+	}
+
+
+	@Override
+	public EventDTO findByParticipent(String participentName) throws ApplicationException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		EventDTO dto = null;
+
+		StringBuffer sql = new StringBuffer("SELECT * FROM EVENT WHERE PARTICIPANT_NAME = ?");
+
+		try {
+
+			con = JDBCDataSource.getConnection();
+
+			ps = con.prepareStatement(sql.toString());
+
+			ps.setString(1, participentName);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				dto = new EventDTO();
+
+				dto.setId(rs.getLong("ID"));
+				dto.setParticipantName(rs.getString("PARTICIPANT_NAME"));
+				dto.setEventName(rs.getString("EVENT_NAME"));
+				dto.setEmail(rs.getString("EMAIL"));
+				dto.setRegistrationDate(rs.getDate("REGISTRATION_DATE"));
+			}
+
+		} catch (Exception e) {
+
+			throw new ApplicationException("Exception in finding Event by Participant Name");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(con);
+		}
+
+		return dto;
+	}
+
+	@Override
+	public EventDTO findByEvent(String eventName) throws ApplicationException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		EventDTO dto = null;
+
+		StringBuffer sql = new StringBuffer("SELECT * FROM EVENT WHERE EVENT_NAME = ?");
+
+		try {
+
+			con = JDBCDataSource.getConnection();
+
+			ps = con.prepareStatement(sql.toString());
+
+			ps.setString(1, eventName);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				dto = new EventDTO();
+
+				dto.setId(rs.getLong("ID"));
+				dto.setParticipantName(rs.getString("PARTICIPANT_NAME"));
+				dto.setEventName(rs.getString("EVENT_NAME"));
+				dto.setEmail(rs.getString("EMAIL"));
+				dto.setRegistrationDate(rs.getDate("REGISTRATION_DATE"));
+			}
+
+		} catch (Exception e) {
+
+		
+
+			throw new ApplicationException("Exception in finding Event by Event Name");
+
+		} finally {
+
+			JDBCDataSource.closeConnection(con);
+		}
+
+		return dto;
+	}
 }
+

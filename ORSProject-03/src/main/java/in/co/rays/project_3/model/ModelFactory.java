@@ -1,6 +1,7 @@
 package in.co.rays.project_3.model;
 
 import java.util.HashMap;
+
 import java.util.ResourceBundle;
 
 /**
@@ -167,17 +168,17 @@ public final class ModelFactory {
 	}
 	
 	
-	//usecases
+	//Usecases
 	
-	public UserModelInt getEventModel() {
+	public EventModelInt getEventModel() {
 
 		EventModelInt eventModel = (EventModelInt) modelCache.get("eventModel");
-		if (userModel == null) {
+		if (eventModel == null) {
 			if ("Hibernate".equals(DATABASE)) {
 				eventModel = new EventModelHibImp();
 			}
 			if ("JDBC".equals(DATABASE)) {
-				eventModel = new EventModelJDBCImpl();
+				eventModel = new EventModelJDBC();
 			}
 			modelCache.put("evnetModel", eventModel);
 		}

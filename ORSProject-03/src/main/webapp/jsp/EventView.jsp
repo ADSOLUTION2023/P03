@@ -1,25 +1,24 @@
-<%@page import="in.co.rays.project_3.controller.EventCtl"%>
-<%@page import="java.util.HashMap"%>
 <%@page import="java.util.List"%>
-<%@page import="in.co.rays.project_3.util.HTMLUtility"%>
-<%@page import="in.co.rays.project_3.controller.SubjectCtl"%>
-<%@page import="in.co.rays.project_3.util.DataUtility"%>
 <%@page import="in.co.rays.project_3.util.ServletUtility"%>
-
-
+<%@page import="in.co.rays.project_3.util.DataUtility"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta charset="ISO-8859-1">
 <title>Event View</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style type="text/css">
-.log1 {
-	padding-top: 5%;
-	/* padding-left: 30%; */
+i.css {
+	border: 2px solid #8080803b;
+	padding-left: 10px;
+	padding-bottom: 11px;
+	background-color: #ebebe0;
+}
+
+.input-group-addon {
+	box-shadow: 9px 8px 7px #001a33;
 }
 
 .hm {
@@ -28,49 +27,49 @@
 	background-attachment: fixed;
 	background-size: cover;
 	padding-top: 75px;
-}
 
-i.css {
-	border: 2px solid #8080803b;
-	padding-left: 10px;
-	padding-bottom: 7px;
-	background-color: #ebebe0;
+	/* background-size: 100%; */
 }
 </style>
+
 </head>
 <body class="hm">
 	<div class="header">
 		<%@include file="Header.jsp"%>
+		<%@include file="calendar.jsp"%>
 	</div>
 	<div>
 
 		<main>
 		<form action="<%=ORSView.EVENT_CTL%>" method="post">
-
-			<div class="row pt-3 pb-3">
+			<jsp:useBean id="dto" class="in.co.rays.project_3.dto.EventDTO"
+				scope="request"></jsp:useBean>
+			<div class="row pt-3">
 				<!-- Grid column -->
 				<div class="col-md-4 mb-4"></div>
 				<div class="col-md-4 mb-4">
-					<jsp:useBean id="dto" class="in.co.rays.project_3.dto.EventDTO"
-						scope="request"></jsp:useBean>
-					<div class="card">
+					<div class="card input-group-addon">
 						<div class="card-body">
+
 							<%
 								long id = DataUtility.getLong(request.getParameter("id"));
 
-								if (dto.getId() != null && dto.getId() > 0) {
+								if (dto.getEventName() != null && dto.getId() > 0) {
 							%>
-							<h3 class="text-center  text-primary">Update Event</h3>
+							<h3 class="text-center default-text text-primary">UPDATE
+								EVENT</h3>
 							<%
 								} else {
 							%>
-							<h3 class="text-center  text-primary">Add Event</h3>
+							<h3 class="text-center default-text text-primary">ADD EVENT</h3>
 							<%
 								}
 							%>
 							<!--Body-->
 							<div>
-
+								<%
+									List list = (List) request.getAttribute("roleList");
+								%>
 
 								<H4 align="center">
 									<%
@@ -99,12 +98,6 @@ i.css {
 
 								</H4>
 
-
-								<%
-									HashMap eventType = (HashMap) request.getAttribute("event");
-									HashMap category = (HashMap) request.getAttribute("categoryL");
-								%>
-
 								<input type="hidden" name="id" value="<%=dto.getId()%>">
 								<input type="hidden" name="createdBy"
 									value="<%=dto.getCreatedBy()%>"> <input type="hidden"
@@ -114,26 +107,167 @@ i.css {
 								<input type="hidden" name="modifiedDatetime"
 									value="<%=DataUtility.getTimestamp(dto.getModifiedDatetime())%>">
 							</div>
+
 							<div class="md-form">
-								<span class="pl-sm-5"><b>Event Name</b><span
-									style="color: red;">*</span></span></br>
+
+								<span class="pl-sm-5"><b>Participant Name</b> <span
+									style="color: red;">*</span></span> </br>
 								<div class="col-sm-12">
 									<div class="input-group">
 										<div class="input-group-prepend">
 											<div class="input-group-text">
-												<i class="fa fa-book grey-text" style="font-size: 1rem;"></i>
+												<i class="fa fa-user grey-text" style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<input type="text" class="form-control" name="participantName"
+											placeholder="First Name"
+											value="<%=DataUtility.getStringData(dto.getParticipantName())%>">
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("participantName", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>Event Name</b> <span
+									style="color: red;">*</span>
+								</span></br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-user-circle grey-text"
+													style="font-size: 1rem;"></i>
 											</div>
 										</div>
 										<input type="text" class="form-control" name="eventName"
-											placeholder="Enter Event Name"
+											placeholder="Event Name"
 											value="<%=DataUtility.getStringData(dto.getEventName())%>">
 									</div>
 								</div>
 								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("eventName", request)%></font></br>
 
-								
-								<span class="pl-sm-5"><b>Event Date</b><span
-									style="color: red;">*</span></span> </br>
+								<%
+									if (dto.getEventName()!= null && id > 0) {
+								%>
+								<input type="hidden" name="password"
+									value="<%=DataUtility.getStringData(dto.getPassword())%>">
+								<input type="hidden" name="confirmPassword"
+									value="<%=DataUtility.getStringData(dto.getPassword())%>">
+								<%
+									} else {
+								%>
+								<span class="pl-sm-5"> <b>Password</b> <span
+									style="color: red;">*</span>
+								</span> </br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-key grey-text" style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<input type="password" class="form-control" name="password"
+											placeholder="password"
+											value="<%=DataUtility.getStringData(dto.getPassword())%>">
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("password", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>Confirm Password</b> <span
+									style="color: red;">*</span>
+								</span> </br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-key grey-text" style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<input type="password" class="form-control"
+											name="confirmPassword" placeholder="confirmPassword"
+											value="<%=DataUtility.getStringData(dto.getConfirmPassword())%>">
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("confirmPassword", request)%></font></br>
+								<%
+									}
+								%>
+
+								<span class="pl-sm-5"> <b>Email Id</b> <span
+									style="color: red;">*</span>
+								</span> </br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-envelope grey-text" style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<input type="text" class="form-control" id="defaultForm-email"
+											name="emailId" placeholder="email Id"
+											value="<%=DataUtility.getStringData(dto.getLogin())%>">
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("emailId", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>Mobile No</b> <span
+									style="color: red;">*</span>
+								</span> </br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-phone-square grey-text"
+													style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<input type="text" class="form-control" id="defaultForm-email"
+											maxlength="10" name="mobileNo" placeholder="mobile No"
+											value="<%=DataUtility.getStringData(dto.getMobileNo())%>">
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("mobileNo", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>Role</b> <span
+									style="color: red;">*</span>
+								</span></br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-user grey-text" style="font-size: 1rem;"></i>
+											</div>
+										</div>
+										<%=HTMLUtility.getList("role", String.valueOf(dto.getRoleId()), list)%>
+									</div>
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("role", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>Gender</b> <span
+									style="color: red;">*</span>
+								</span> </br>
+								<div class="col-sm-12">
+									<div class="input-group">
+										<div class="input-group-prepend">
+											<div class="input-group-text">
+												<i class="fa fa-venus-mars grey-text"
+													style="font-size: 1rem;"></i>
+											</div>
+										</div>
+
+										<%
+											HashMap map = new HashMap();
+											map.put("Male", "Male");
+											map.put("Female", "Female");
+
+											String htmlList = HTMLUtility.getList("gender", dto.getGender(), map);
+										%>
+										<%=htmlList%></div>
+
+								</div>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("gender", request)%></font></br>
+
+								<span class="pl-sm-5"> <b>DOB</b> <span
+									style="color: red;">*</span>
+								</span></br>
 								<div class="col-sm-12">
 									<div class="input-group">
 										<div class="input-group-prepend">
@@ -141,53 +275,24 @@ i.css {
 												<i class="fa fa-calendar grey-text" style="font-size: 1rem;"></i>
 											</div>
 										</div>
-										<input type="text" class="form-control udate6" name="eventDate"
-											placeholder="Enter Event Date" id="udate6" readonly="readonly"
-											value="<%=DataUtility.getDateString(dto.getEventDate())%>">
+										<input type="text" id="datepicker2" name="dob"
+											class="form-control" placeholder="Date Of Birth"
+											readonly="readonly"
+											value="<%=DataUtility.getDateString(dto.getDob())%>">
 									</div>
 								</div>
-								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("eventDate", request)%></font></br>
-
-
-								<span class="pl-sm-5"><b>Event Type</b><span
-									style="color: red;">*</span></span> </br>
-								<div class="col-sm-12">
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<div class="input-group-text">
-												<i class="fa fa-user-alt grey-text" style="font-size: 1rem;"></i>
-											</div>
-										</div>
-										<%=HTMLUtility.getList("eventType", dto.getEventType(), eventType)%>
-									</div>
-								</div>
-								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("eventType", request)%></font></br>
-								</br> 
-								
-								<span class="pl-sm-5"><b>Category</b><span
-									style="color: red;">*</span></span> </br>
-								<div class="col-sm-12">
-									<div class="input-group">
-										<div class="input-group-prepend">
-											<div class="input-group-text">
-												<i class="fa fa-user-alt grey-text" style="font-size: 1rem;"></i>
-											</div>
-										</div>
-										<%=HTMLUtility.getList("category", dto.getCategory(), category)%>
-									</div>
-								</div>
-								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("category", request)%></font></br>
-								</br>
+								<font color="red" class="pl-sm-5"> <%=ServletUtility.getErrorMessage("dob", request)%></font></br>
 								<%
-									if (id > 0) {
+									if (dto.getFirstName() != null && dto.getId() > 0) {
 								%>
+
 								<div class="text-center">
 
 									<input type="submit" name="operation"
 										class="btn btn-success btn-md" style="font-size: 17px"
-										value="<%=EventCtl.OP_UPDATE%>"> <input
-										type="submit" name="operation" class="btn btn-warning btn-md"
-										style="font-size: 17px" value="<%=EventCtl.OP_CANCEL%>">
+										value="<%=UserCtl.OP_UPDATE%>"> <input type="submit"
+										name="operation" class="btn btn-warning btn-md"
+										style="font-size: 17px" value="<%=UserCtl.OP_CANCEL%>">
 								</div>
 								<%
 									} else {
@@ -196,25 +301,28 @@ i.css {
 
 									<input type="submit" name="operation"
 										class="btn btn-success btn-md" style="font-size: 17px"
-										value="<%=EventCtl.OP_SAVE%>"> <input type="submit"
+										value="<%=UserCtl.OP_SAVE%>"> <input type="submit"
 										name="operation" class="btn btn-warning btn-md"
-										style="font-size: 17px" value="<%=EventCtl.OP_RESET%>">
+										style="font-size: 17px" value="<%=UserCtl.OP_RESET%>">
 								</div>
 								<%
 									}
 								%>
+
+
 							</div>
+
 						</div>
 					</div>
-					<div class="col-md-4 mb-4"></div>
-				</div>
 		</form>
 		</main>
-
+		<div class="col-md-4 mb-4"></div>
 
 	</div>
-<%@ include file="calendar.jsp" %>
+
 </body>
 <%@include file="FooterView.jsp"%>
 
+
+</body>
 </html>

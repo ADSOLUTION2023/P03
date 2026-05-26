@@ -56,6 +56,9 @@
 
 
 		<!-- usecase -->
+		<mapping
+			resource="in/co/rays/project_3/hbm/EventDTO.hbm.xml" />
+
 		
 			
 

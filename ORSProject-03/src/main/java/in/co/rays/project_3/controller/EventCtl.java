@@ -1,8 +1,6 @@
 package in.co.rays.project_3.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,236 +13,216 @@ import in.co.rays.project_3.dto.BaseDTO;
 import in.co.rays.project_3.dto.EventDTO;
 import in.co.rays.project_3.exception.ApplicationException;
 import in.co.rays.project_3.exception.DuplicateRecordException;
-import in.co.rays.project_3.model.ModelFactory;
-import in.co.rays.project_3.model.RoleModelInt;
 import in.co.rays.project_3.model.EventModelInt;
+import in.co.rays.project_3.model.ModelFactory;
 import in.co.rays.project_3.util.DataUtility;
 import in.co.rays.project_3.util.DataValidator;
 import in.co.rays.project_3.util.PropertyReader;
 import in.co.rays.project_3.util.ServletUtility;
 
-@WebServlet(urlPatterns = { "/ctl/EventCtl" })
-public class EventCtl extends BaseCtl{
-	
-	
+@WebServlet(name = "EventCtl", urlPatterns = { "/ctl/EventCtl" })
+
+public class EventCtl extends BaseCtl {
+
 	private static final long serialVersionUID = 1L;
+
 	private static Logger log = Logger.getLogger(EventCtl.class);
 
-	protected void preload(HttpServletRequest request) {
-		RoleModelInt model = ModelFactory.getInstance().getRoleModel();
-		try {
-			List list = model.list();
-			/*
-			 * Iterator it = list.iterator(); while (it.hasNext()) { RoleDTO dto = (RoleDTO)
-			 * it.next(); System.out.println(dto.getId());
-			 * System.out.println(dto.getName()); System.out.println(dto.getDescription());
-			 * 
-			 * }
-			 */
-			request.setAttribute("roleList", list);
-
-		} catch (Exception e) {
-			request.setAttribute("roleList", new ArrayList());
-		}
-
-	}
-
+	@Override
 	protected boolean validate(HttpServletRequest request) {
+
 		boolean pass = true;
 
-		if (DataValidator.isNull(request.getParameter("firstName"))) {
-			request.setAttribute("firstName", PropertyReader.getValue("error.require", "first Name"));
-			pass = false;
-		} else if (!DataValidator.isName(request.getParameter("firstName"))) {
-			request.setAttribute("firstName", "please enter correct Name");
+		if (DataValidator.isNull(request.getParameter("participantName"))) {
+
+			request.setAttribute("participantName", PropertyReader.getValue("error.require", "Participant Name"));
+
 			pass = false;
 
-		}
-		if (DataValidator.isNull(request.getParameter("lastName"))) {
-			request.setAttribute("lastName", PropertyReader.getValue("error.require", "last Name"));
-			pass = false;
-		} else if (!DataValidator.isName(request.getParameter("firstName"))) {
-			request.setAttribute("lastName", "please enter correct Name");
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("password"))) {
-			request.setAttribute("password", PropertyReader.getValue("error.require", "password"));
-			pass = false;
-		} else if (!DataValidator.isPasswordLength(request.getParameter("password"))) {
-			request.setAttribute("password", "Password should be 8 to 12 characters");
-			pass = false;
-		} else if (!DataValidator.isPassword(request.getParameter("password"))) {
-			request.setAttribute("password", "Password Must contain uppercase, lowercase, digit & special character");
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("confirmPassword"))) {
-			request.setAttribute("confirmPassword", PropertyReader.getValue("error.require", "confirmPassword"));
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("role"))) {
-			request.setAttribute("role", PropertyReader.getValue("error.require", "role"));
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("gender"))) {
-			request.setAttribute("gender", PropertyReader.getValue("error.require", "gender"));
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("mobileNo"))) {
-			request.setAttribute("mobileNo", PropertyReader.getValue("error.require", "mobile No"));
-			pass = false;
-		} else if (!DataValidator.isPhoneNo(request.getParameter("mobileNo"))) {
-			request.setAttribute("mobileNo", "Please Enter Valid Mobile Number");
+		} else if (!DataValidator.isName(request.getParameter("participantName"))) {
+
+			request.setAttribute("participantName", "Enter valid Participant Name");
+
 			pass = false;
 		}
 
-		if (DataValidator.isNull(request.getParameter("emailId"))) {
-			request.setAttribute("emailId", PropertyReader.getValue("error.require", "email Id"));
-			pass = false;
-		} else if (!DataValidator.isEmail(request.getParameter("emailId"))) {
-			request.setAttribute("emailId", PropertyReader.getValue("error.email", "Email Id "));
-			pass = false;
-		}
-		if (DataValidator.isNull(request.getParameter("dob"))) {
-			request.setAttribute("dob", PropertyReader.getValue("error.require", "dob"));
-			pass = false;
-		} else if (!DataValidator.isDate(request.getParameter("dob"))) {
-			request.setAttribute("dob", PropertyReader.getValue("error.date", "Date Of Birth"));
-			pass = false;
-		} else if (!DataValidator.isAge(request.getParameter("dob"))) {
+		if (DataValidator.isNull(request.getParameter("eventName"))) {
 
-			request.setAttribute("dob", "Age Must be greater then 18 year");
+			request.setAttribute("eventName", PropertyReader.getValue("error.require", "Event Name"));
+
 			pass = false;
 		}
 
-		if (!request.getParameter("password").equals(request.getParameter("confirmPassword"))
-				&& !"".equals(request.getParameter("confirmPassword"))) {
+		if (DataValidator.isNull(request.getParameter("email"))) {
 
-			request.setAttribute("confirmPassword", "Confirm  Password  should  be matched.");
+			request.setAttribute("email", PropertyReader.getValue("error.require", "Email"));
+
+			pass = false;
+
+		} else if (!DataValidator.isEmail(request.getParameter("email"))) {
+
+			request.setAttribute("email", "Enter valid Email");
+
 			pass = false;
 		}
+
+		if (DataValidator.isNull(request.getParameter("registrationDate"))) {
+
+			request.setAttribute("registrationDate", PropertyReader.getValue("error.require", "Registration Date"));
+
+			pass = false;
+		}
+
 		return pass;
-
 	}
 
+	@Override
 	protected BaseDTO populateDTO(HttpServletRequest request) {
-		
+
 		EventDTO dto = new EventDTO();
 
 		dto.setId(DataUtility.getLong(request.getParameter("id")));
 
-		dto.setRoleId(DataUtility.getLong(request.getParameter("role")));
-		dto.setDob(DataUtility.getDate(request.getParameter("dob")));
-		dto.setFirstName(DataUtility.getString(request.getParameter("firstName")));
+		dto.setParticipantName(DataUtility.getString(request.getParameter("participantName")));
 
-		dto.setLastName(DataUtility.getString(request.getParameter("lastName")));
+		dto.setEventName(DataUtility.getString(request.getParameter("eventName")));
 
-		dto.setLogin(DataUtility.getString(request.getParameter("emailId")));
+		dto.setEmail(DataUtility.getString(request.getParameter("email")));
 
-		dto.setPassword(DataUtility.getString(request.getParameter("password")));
-
-		dto.setConfirmPassword(DataUtility.getString(request.getParameter("confirmPassword")));
-
-		dto.setGender(DataUtility.getString(request.getParameter("gender")));
-		dto.setMobileNo(DataUtility.getString(request.getParameter("mobileNo")));
+		dto.setRegistrationDate(DataUtility.getDate(request.getParameter("registrationDate")));
 
 		populateBean(dto, request);
-
-		log.debug("EventRegistrationCtl Method populatedto Ended");
 
 		return dto;
 	}
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
-		log.debug("EventCtl Method doGet Started");
+			throws ServletException, IOException {
+
+		log.debug("EventCtl doGet Start");
+
 		String op = DataUtility.getString(request.getParameter("operation"));
-		// get model
-		EventModelInt model = ModelFactory.getInstance().getEventModel();
+
+		EventModelInt model = (EventModelInt) ModelFactory.getInstance().getEventModel();
+
 		long id = DataUtility.getLong(request.getParameter("id"));
+
 		if (id > 0 || op != null) {
-			
-			EventDTO dto = null;
+
+			EventDTO dto;
+
 			try {
-				dto = model.findByPK(id);
+
+				dto = model.findByPk(id);
+
 				ServletUtility.setDto(dto, request);
-			} catch (Exception e) {
-				e.printStackTrace();
+
+			} catch (ApplicationException e) {
+
 				log.error(e);
-				ServletUtility.handleDBDown(getView(), request, response);
+
+				ServletUtility.handleException(e, request, response);
+
 				return;
 			}
 		}
+
 		ServletUtility.forward(getView(), request, response);
+
+		log.debug("EventCtl doGet End");
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+			throws ServletException, IOException {
+
+		log.debug("EventCtl doPost Start");
+
 		String op = DataUtility.getString(request.getParameter("operation"));
-		// get model
-		EventModelInt model = ModelFactory.getInstance().getEventModel();
+
+		EventModelInt model = (EventModelInt) ModelFactory.getInstance().getEventModel();
+
 		long id = DataUtility.getLong(request.getParameter("id"));
+
 		if (OP_SAVE.equalsIgnoreCase(op) || OP_UPDATE.equalsIgnoreCase(op)) {
+
 			EventDTO dto = (EventDTO) populateDTO(request);
+
 			try {
+
 				if (id > 0) {
+
 					model.update(dto);
-					ServletUtility.setSuccessMessage("Data Updated successfully", request);
-					ServletUtility.setDto(dto, request);
+
+					ServletUtility.setSuccessMessage("Event Updated Successfully", request);
+
 				} else {
 
-					try {
-						model.add(dto);
-						ServletUtility.setSuccessMessage("Data saved successfully ", request);
-					} catch (ApplicationException e) {
-						log.error(e);
-						ServletUtility.handleDBDown(getView(), request, response);
-						return;
-					} catch (DuplicateRecordException e) {
-						ServletUtility.setDto(dto, request);
-						ServletUtility.setErrorMessage("Login id already exists", request);
-					}
+					model.add(dto);
 
+					ServletUtility.setSuccessMessage("Event Added Successfully", request);
 				}
 
-			} catch (ApplicationException e) {
-				log.error(e);
-				ServletUtility.handleDBDown(getView(), request, response);
-				return;
-			} catch (DuplicateRecordException e) {
 				ServletUtility.setDto(dto, request);
-				ServletUtility.setErrorMessage("Login id already exists", request);
+
+			} catch (ApplicationException e) {
+
+				log.error(e);
+
+				ServletUtility.handleException(e, request, response);
+
+				return;
+
+			} catch (DuplicateRecordException e) {
+
+				ServletUtility.setErrorMessage("Event already exists", request);
+
+				ServletUtility.setDto(dto, request);
 			}
+
 		} else if (OP_DELETE.equalsIgnoreCase(op)) {
 
 			EventDTO dto = (EventDTO) populateDTO(request);
+
 			try {
+
 				model.delete(dto);
+
 				ServletUtility.redirect(ORSView.EVENT_LIST_CTL, request, response);
+
 				return;
+
 			} catch (ApplicationException e) {
+
 				log.error(e);
-				ServletUtility.handleDBDown(getView(), request, response);
+
+				ServletUtility.handleException(e, request, response);
+
 				return;
 			}
 
 		} else if (OP_CANCEL.equalsIgnoreCase(op)) {
 
 			ServletUtility.redirect(ORSView.EVENT_LIST_CTL, request, response);
+
 			return;
+
 		} else if (OP_RESET.equalsIgnoreCase(op)) {
 
 			ServletUtility.redirect(ORSView.EVENT_CTL, request, response);
+
 			return;
 		}
+
 		ServletUtility.forward(getView(), request, response);
 
-		log.debug("EventCtl Method doPostEnded");
+		log.debug("EventCtl doPost End");
 	}
 
 	@Override
 	protected String getView() {
-	
+
 		return ORSView.EVENT_VIEW;
 	}
-
 }
